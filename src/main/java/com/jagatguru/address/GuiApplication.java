@@ -2,6 +2,7 @@ package com.jagatguru.address;
 
 import com.jagatguru.address.common.Constants;
 import com.jagatguru.address.entity.Address;
+import com.jagatguru.address.gui.AddressEditPopUp;
 import com.jagatguru.address.service.AddressService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,7 @@ public class GuiApplication extends JFrame {
   private JTable recordViewTable;
   private JButton downloadButton;
   private JPanel rightProcessPanel;
+  private JPopupMenu popupMenuPhoneNumber;
 
 
   private DefaultListModel<String> searchResultListModel;
@@ -57,16 +61,18 @@ public class GuiApplication extends JFrame {
     setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.pack();
 
+    //Initializations
     this.addresses = new ArrayList<>();
-
+    this.popupMenuPhoneNumber = new JPopupMenu();
+    searchListPopUpItems();
     searchResultListModel = new DefaultListModel();
     this.searchResultList.setModel(searchResultListModel);
 
+    //Event Configs
     uploadButton.addActionListener(new ActionListener() {
       @Override
-      public void actionPerformed(ActionEvent e) {
-        File file = openFileFromComputer();
-        System.out.println(file.getName());
+      public void actionPerformed(ActionEvent event) {
+        openAndQueueFileForProcess(event);
       }
     });
     downloadButton.addActionListener(new ActionListener() {
@@ -83,13 +89,8 @@ public class GuiApplication extends JFrame {
     searchResultList.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(ListSelectionEvent e) {
-
       }
     });
-
-    /**
-     * Phone Search Events
-     */
     searchTextField.getDocument().addDocumentListener(new DocumentListener() {
       @Override
       public void insertUpdate(DocumentEvent event) {
@@ -105,8 +106,29 @@ public class GuiApplication extends JFrame {
       public void changedUpdate(DocumentEvent event) {
       }
     });
+    searchResultList.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent event) {
+        searchResultItemRightClick(event);
+      }
+    });
   }
 
+  private void openAndQueueFileForProcess(ActionEvent e){
+    File file = openFileFromComputer();
+    System.out.println(file.getName());
+  }
+  private void searchResultItemRightClick(MouseEvent event){
+    //DETERMINE RIGHT CLICKED
+    if (SwingUtilities.isRightMouseButton(event)
+        && searchResultList.locationToIndex(event.getPoint()) == searchResultList
+        .getSelectedIndex()) {
+      //Make sure sth row is selected
+      if (!searchResultList.isSelectionEmpty()) {
+        popupMenuPhoneNumber.show(searchResultList, event.getX(), event.getY());
+      }
+    }
+  }
   private void insertPhoneUpdate(DocumentEvent event){
     if(event != null){
       Document document = event.getDocument();
@@ -121,6 +143,31 @@ public class GuiApplication extends JFrame {
         }
       }
     }
+  }
+
+  private void searchListPopUpItems(){
+
+    //Items
+    JMenuItem showAddress = new JMenuItem("View Address");
+    JMenuItem editAddress = new JMenuItem("Edit Address");
+
+    //Adding items to popup
+    popupMenuPhoneNumber.add(showAddress);
+    popupMenuPhoneNumber.add(editAddress);
+
+    //Events
+    showAddress.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        AddressEditPopUp addressEditPopUp = new AddressEditPopUp(null);
+      }
+    });
+    editAddress.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        JOptionPane.showMessageDialog(null,"Edit Address");
+      }
+    });
   }
 
   /**
