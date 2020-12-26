@@ -18,8 +18,11 @@ public interface AddressService {
    * Search Address by Phone number
    *
    * @param param
-   * @param size
+   * @param resultSize
+   * @param start
+   * @param end
    * @return
    */
-  List<Address> searchAddressByPhoneNumber(String param, int size, Timestamp start, Timestamp end);
+  List<Address> searchAddressByPhoneNumber(String param, Integer resultSize, Timestamp start,
+      Timestamp end);
 }

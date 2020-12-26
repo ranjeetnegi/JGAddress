@@ -68,6 +68,7 @@
                 <properties>
                   <background color="-1250068"/>
                   <enabled value="true"/>
+                  <selectionMode value="1"/>
                 </properties>
               </component>
             </children>

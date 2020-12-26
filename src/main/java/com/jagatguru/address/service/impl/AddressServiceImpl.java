@@ -5,6 +5,7 @@ import com.jagatguru.address.repository.AddressRepository;
 import com.jagatguru.address.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +27,9 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  public List<Address> searchAddressByPhoneNumber(String searchParam, int resultSize,
+  public List<Address> searchAddressByPhoneNumber(String searchParam, Integer resultSize,
       Timestamp start, Timestamp end) {
-    return addressRepository.searchAddressByPhoneNumber(searchParam, resultSize, start, end);
+    return addressRepository
+        .searchByPhoneLike(searchParam, start, end, PageRequest.of(0, resultSize));
   }
 }

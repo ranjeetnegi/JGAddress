@@ -9,13 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.jagatguru</groupId>
-	<artifactId>address</artifactId>
+	<artifactId>JGAddress</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Address Cleaner</name>
 	<description>Address clean project</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 
 	<dependencies>
